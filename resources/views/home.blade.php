@@ -1,3 +1,4 @@
+
 <x-layout> 
     <x-slot:title> 
         Welcome 
