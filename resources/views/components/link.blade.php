@@ -4,7 +4,7 @@
 @if($typ=='a')
 
 
-        <div class="navbar-start bg-amber-900"> 
+        <div class="navbar-start"> 
             <a href="/" class="btn btn-ghost text-xl">{{$slot}}</a> 
         </div> 
 

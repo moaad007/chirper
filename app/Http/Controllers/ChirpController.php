@@ -4,10 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Chirp;
+use App\Models\User;
+use Illuminate\Container\Attributes\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
+
 use Illuminate\Validation\Rule;
 
 class ChirpController extends Controller
+
 {
+    
+    use AuthorizesRequests; // Add this line
+    
+
+
     /**
      * Display a listing of the resource.
      */
@@ -31,27 +42,46 @@ class ChirpController extends Controller
      * Store a newly created resource in storage.
      */
     
+
 public function store(Request $request)
 {
-    // Validate the request
     $validated = $request->validate([
         'message' => 'required|string|max:255',
-        // Rule::unique('chirps')->where(function ($query) use ($user) {
-        //     return $query->where('user_id', $user->id);
-        // })
-    ], [
-        'message.required' => 'Please write something to chirp!',
-        'message.max' => 'Chirps must be 255 characters or less.',
     ]);
 
-    // Create the chirp (no user for now - we'll add auth later)
-    \App\Models\Chirp::create([
-        'message' => $validated['message'],
-        'user_id' => null, // We'll add authentication in lesson 11
+    // Use the authenticated user
+    auth()->user()->chirps()->create($validated);
+
+    return redirect('/')->with('success', 'Your chirp has been posted!');
+}
+
+public function edit(Chirp $chirp)
+{
+    $this->authorize('update', $chirp);
+
+    return view('edit', compact('chirp'));
+}
+
+public function update(Request $request, Chirp $chirp)
+{
+    $this->authorize('update', $chirp);
+
+    $validated = $request->validate([
+        'message' => 'required|string|max:255',
     ]);
 
-    // Redirect back to the feed
-    return redirect('/')->with('success', 'Chirp created!');
+    $chirp->update($validated);
+
+    return redirect('/')->with('success', 'Chirp updated!');
+}
+
+public function destroy(Chirp $chirp)
+{
+    $this->authorize('delete', $chirp);
+
+    $chirp->delete();
+
+    return redirect('/')->with('success', 'Chirp deleted!');
 }
     /**
      * Display the specified resource.
@@ -61,27 +91,6 @@ public function store(Request $request)
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+  
+   
 }
