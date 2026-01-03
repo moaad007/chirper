@@ -41,6 +41,6 @@
         @empty
             <p class="text-gray-500">No chirps yet. Be the first to chirp!</p>
         @endforelse
-        <x-button/>
+        <!-- <x-button/> -->
     </div>
 </x-layout>

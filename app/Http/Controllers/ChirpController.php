@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Chirp;
 use App\Models\User;
-use Illuminate\Container\Attributes\Auth;
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 
@@ -48,9 +49,9 @@ public function store(Request $request)
     $validated = $request->validate([
         'message' => 'required|string|max:255',
     ]);
-
+    $user = Auth::user();
     // Use the authenticated user
-    auth()->user()->chirps()->create($validated);
+    $user->chirps()->create($validated);
 
     return redirect('/')->with('success', 'Your chirp has been posted!');
 }
