@@ -40,7 +40,7 @@ public function update(User $user, Chirp $chirp): bool
 
 public function delete(User $user, Chirp $chirp): bool
 {
-    return $chirp->user()->is($user);
+    return $chirp->user()->is($user) || $user->can('delete all chirps');
 }
 
     /**
